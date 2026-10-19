@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Проверка фото на ИИ — Нейрофото</title>
+<meta name="description" content="Проверьте изображение на следы нейросетей: метаданные, метки C2PA, параметры генерации. Файл не покидает ваш браузер.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="check">
+<header id="hdr"></header>
+
+<main class="wrap">
+  <section class="blk prose" style="max-width:none">
+    <h1 style="font-size:clamp(26px,4vw,38px)">Проверка фото на ИИ</h1>
+    <p class="muted" style="max-width:640px">Перетащите картинку, вставьте из буфера (Ctrl+V) или выберите файл. Анализ идёт прямо в браузере, файл никуда не загружается.</p>
+
+    <div class="drop" id="drop">
+      <div style="font-size:34px">🖼</div>
+      <b>Перетащите изображение сюда</b>
+      <div class="muted">или нажмите, чтобы выбрать · JPG, PNG, WebP до 25 МБ</div>
+      <input type="file" id="file" accept="image/*" hidden>
+    </div>
+
+    <div id="result" hidden style="margin-top:24px">
+      <div class="split">
+        <div class="stage" style="aspect-ratio:auto;min-height:220px"><img id="pimg" alt="Проверяемое изображение" style="object-fit:contain;max-height:420px"></div>
+        <div class="card">
+          <div class="verdict" id="verdict"></div>
+          <div class="muted" id="pct" style="margin-top:4px"></div>
+          <div class="meter"><i id="bar"></i></div>
+          <div class="muted" id="meta" style="font-size:13px"></div>
+          <ul class="fl" id="fl"></ul>
+        </div>
+      </div>
+      <p class="note">Это проверка по метаданным и косвенным признакам. Если следы стёрты (скриншот, пересохранение, мессенджер), инструмент их не увидит, и «явных следов не найдено» не значит «снимок настоящий». Анализ самих пикселей нейросетью появится позже.</p>
+    </div>
+  </section>
+
+  <div data-ad="bottom"></div>
+</main>
+
+<footer id="ftr"></footer>
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/detect.js"></script>
+<script src="js/check.js"></script>
+</body>
+</html>

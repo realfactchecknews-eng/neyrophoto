@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Банк аватарок — Нейрофото</title>
+<meta name="description" content="Готовые аватарки для соцсетей и мессенджеров: фильтры по стилю и цвету, скачивание в PNG и SVG.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="bank">
+<header id="hdr"></header>
+
+<main class="wrap">
+  <section class="blk">
+    <h1 style="font-size:clamp(26px,4vw,38px)">Банк аватарок</h1>
+    <p class="muted">Нажмите на аватарку, чтобы скачать или доработать её в конструкторе.</p>
+    <label class="f">Стиль</label><div class="chips" id="fstyle"></div>
+    <label class="f">Цвет</label><div class="chips" id="fpal"></div>
+  </section>
+
+  <div data-ad="top"></div>
+
+  <div class="agrid" id="grid"></div>
+  <p class="muted" id="empty" hidden style="text-align:center">Ничего не нашлось</p>
+  <div class="row center" style="margin-top:22px"><button class="btn ghost" id="more">Показать ещё</button></div>
+</main>
+
+<div class="modal" id="modal">
+  <div class="box">
+    <button class="x" data-close aria-label="Закрыть">×</button>
+    <h3 id="mtitle"></h3>
+    <div class="big" id="mbig"></div>
+    <div class="row">
+      <button class="btn" id="mpng">PNG</button>
+      <button class="btn ghost" id="msvg">SVG</button>
+      <a class="btn ghost" id="medit" href="create.html">Доработать</a>
+    </div>
+  </div>
+</div>
+
+<footer id="ftr"></footer>
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/avatar.js"></script>
+<script src="js/bank.js"></script>
+</body>
+</html>

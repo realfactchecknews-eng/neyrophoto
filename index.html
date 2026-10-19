@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Нейрофото — аватарки, нейро-фото и проверка на ИИ</title>
+<meta name="description" content="Создайте аватарку за секунды, сгенерируйте нейро-фото, проверьте картинку на следы ИИ и скачайте готовое из банка аватарок.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="">
+<header id="hdr"></header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Аватарки и нейро-фото<br><span class="grad">за пару кликов</span></h1>
+    <p>Соберите аватарку в конструкторе, сгенерируйте картинку нейросетью, проверьте, не сделано ли фото ИИ, или возьмите готовую из банка.</p>
+    <div class="row center">
+      <a class="btn" href="create.html">Создать аватарку</a>
+      <a class="btn ghost" href="check.html">Проверить фото на ИИ</a>
+    </div>
+    <div class="strip" id="strip" style="max-width:760px;margin:36px auto 0"></div>
+  </section>
+
+  <div data-ad="top"></div>
+
+  <section class="cards">
+    <a class="card link" href="create.html"><div class="ico">🎨</div><h3>Конструктор аватарок</h3><p class="muted">Персонажи, геометрия, сферы и пиксели. Палитры на выбор, PNG и SVG. Бесплатно и без лимита.</p></a>
+    <a class="card link" href="create.html#neuro"><div class="ico">✨</div><h3>Нейро-генерация</h3><p class="muted">Опишите картинку словами: аватар, фото или арт. 3 генерации в день бесплатно.</p></a>
+    <a class="card link" href="check.html"><div class="ico">🔍</div><h3>Проверка на ИИ</h3><p class="muted">Ищем следы нейросетей в метаданных и размерах. Файл остаётся у вас в браузере.</p></a>
+    <a class="card link" href="bank.html"><div class="ico">🗂</div><h3>Банк аватарок</h3><p class="muted">Сотни готовых аватарок с фильтрами по стилю и цвету. Скачать или доработать в конструкторе.</p></a>
+  </section>
+
+  <section class="blk">
+    <h2>Как это работает</h2>
+    <div class="cards">
+      <div class="card"><h3>1. Выберите</h3><p class="muted">Конструктор, нейро-генерацию или готовую аватарку из банка.</p></div>
+      <div class="card"><h3>2. Настройте</h3><p class="muted">Стиль, палитра, описание. Результат виден сразу.</p></div>
+      <div class="card"><h3>3. Скачайте</h3><p class="muted">PNG для соцсетей и мессенджеров, SVG для дизайна.</p></div>
+    </div>
+  </section>
+
+  <div data-ad="bottom"></div>
+</main>
+
+<footer id="ftr"></footer>
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/avatar.js"></script>
+<script>
+(function () {
+  var s = document.getElementById('strip'), st = Object.keys(Avatar.STYLES), pl = Object.keys(Avatar.PALETTES), h = '';
+  for (var i = 0; i < 12; i++) h += Avatar.make({ style: st[i % st.length], palette: pl[(i * 5) % pl.length], seed: 'home-' + i });
+  s.innerHTML = h;
+})();
+</script>
+</body>
+</html>

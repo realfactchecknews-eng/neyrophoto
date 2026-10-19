@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Создать аватарку и нейро-фото — Нейрофото</title>
+<meta name="description" content="Бесплатный конструктор аватарок и нейро-генерация изображений по описанию.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="create">
+<header id="hdr"></header>
+
+<main class="wrap">
+  <section class="blk">
+    <h1 style="font-size:clamp(26px,4vw,38px)">Создать</h1>
+    <div class="tabs">
+      <button data-tab="builder" class="on">Конструктор аватарок</button>
+      <button data-tab="neuro">Нейро-генерация</button>
+    </div>
+
+    <div id="tab-builder" class="tabpane">
+      <div class="split">
+        <div>
+          <div class="stage" id="prev"></div>
+          <div class="mini" id="mini"></div>
+        </div>
+        <div class="card">
+          <label class="f">Стиль</label><div class="chips" id="styles"></div>
+          <label class="f">Палитра</label><div class="chips" id="palettes"></div>
+          <label class="f" for="seed">Номер варианта (одинаковый номер даёт ту же аватарку)</label>
+          <div class="row"><input type="text" id="seed" style="flex:1;min-width:120px"><button class="btn ghost sm" id="rnd">🎲 Случайная</button></div>
+          <label class="f"><input type="checkbox" id="round" checked> Круглая обрезка</label>
+          <div class="row" style="margin-top:18px">
+            <button class="btn" id="dlPng">Скачать PNG</button>
+            <button class="btn ghost" id="dlSvg">SVG</button>
+          </div>
+          <p class="note">Всё считается в браузере. Бесплатно и без ограничений.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-neuro" class="tabpane" hidden>
+      <div class="split">
+        <div class="card">
+          <label class="f">Что создаём</label><div class="chips" id="modes"></div>
+          <label class="f" for="prompt">Описание</label>
+          <textarea id="prompt" placeholder="Например: рыжий кот-астронавт в неоновом городе"></textarea>
+          <div class="row" style="margin-top:16px">
+            <button class="btn" id="gen">Сгенерировать</button>
+            <span class="quota" id="quota"></span>
+          </div>
+          <p class="note" id="nerr" style="color:var(--bad)"></p>
+          <p class="note">Описание уходит сервису генерации. Не вводите личные данные. Результаты создаются нейросетью и могут быть неточными.</p>
+        </div>
+        <div>
+          <div class="stage" id="nstage"><div class="ph">Здесь появится результат</div></div>
+          <div class="row" style="margin-top:12px">
+            <button class="btn ghost sm" id="ndl" hidden>Скачать</button>
+            <a class="btn ghost sm" id="nopen" target="_blank" rel="noopener" hidden>Открыть оригинал</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div data-ad="bottom"></div>
+</main>
+
+<div class="modal" id="paywall">
+  <div class="box">
+    <button class="x" data-close aria-label="Закрыть">×</button>
+    <h2>Бесплатные генерации на сегодня закончились</h2>
+    <p class="muted">Приходите завтра или возьмите пакет генераций, либо подписку Pro. Конструктор аватарок остаётся бесплатным.</p>
+    <div class="row"><a class="btn" href="pricing.html">Смотреть тарифы</a><button class="btn ghost" data-close>Позже</button></div>
+  </div>
+</div>
+
+<footer id="ftr"></footer>
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/avatar.js"></script>
+<script src="js/create.js"></script>
+</body>
+</html>
