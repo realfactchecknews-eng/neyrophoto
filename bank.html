@@ -19,8 +19,25 @@
     <label class="f">Цвет</label><div class="chips" id="fpal"></div>
   </section>
 
+  <section class="blk" id="usersec" hidden>
+    <h2>От пользователей</h2>
+    <div class="agrid" id="ugrid"></div>
+    <details class="card" style="margin-top:16px;max-width:560px"><summary style="cursor:pointer;font-weight:600">Загрузить свою аватарку</summary>
+      <form id="upform">
+        <label class="f" for="upfile">Изображение: JPG, PNG или WebP, до 1 МБ</label>
+        <input type="file" id="upfile" accept="image/png,image/jpeg,image/webp" required>
+        <label class="f" for="uptitle">Название (необязательно)</label>
+        <input type="text" id="uptitle" maxlength="60">
+        <label class="f"><input type="checkbox" id="upagree" required> Это моя работа или у меня есть права на неё. Я согласен(на) на публикацию в банке и бесплатное использование другими посетителями на условиях <a href="terms.html" target="_blank">правил сайта</a>.</label>
+        <div class="row" style="margin-top:12px"><button class="btn" type="submit">Отправить на модерацию</button><span class="note" id="upmsg"></span></div>
+        <p class="note">Аватарки появляются в банке после проверки. Нельзя загружать изображения реальных людей без их согласия, откровенный и незаконный контент.</p>
+      </form>
+    </details>
+  </section>
+
   <div data-ad="top"></div>
 
+  <h2>Готовые аватарки</h2>
   <div class="agrid" id="grid"></div>
   <p class="muted" id="empty" hidden style="text-align:center">Ничего не нашлось</p>
   <div class="row center" style="margin-top:22px"><button class="btn ghost" id="more">Показать ещё</button></div>
@@ -42,6 +59,7 @@
 <footer id="ftr"></footer>
 <script src="js/config.js"></script>
 <script src="js/common.js"></script>
+<script src="js/api.js"></script>
 <script src="js/avatar.js"></script>
 <script src="js/bank.js"></script>
 </body>

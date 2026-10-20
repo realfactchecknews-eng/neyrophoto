@@ -51,7 +51,12 @@
     $('empty').hidden = list.length > 0;
   }
 
+  function restoreModal() {
+    $('msvg').hidden = false; $('medit').hidden = false; $('mpng').textContent = 'PNG';
+  }
+
   function open(a) {
+    restoreModal();
     const svg = Avatar.make(a);
     $('mbig').innerHTML = svg;
     $('mtitle').textContent = 'Аватарка №' + a.id;
@@ -60,6 +65,54 @@
     $('medit').href = 'create.html?style=' + a.style + '&palette=' + a.palette + '&seed=' + encodeURIComponent(a.seed);
     $('modal').classList.add('open');
   }
+
+  // ---- Пользовательские аватарки (нужен бэкенд) ----
+  const esc = function (t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  function openUser(it) {
+    const src = NFApi.base + '/api/bank/img/' + it.id;
+    $('mbig').innerHTML = '<img alt="' + esc(it.title) + '" src="' + src + '" style="width:100%;border-radius:16px;margin-bottom:14px;display:block">';
+    $('mtitle').textContent = it.title || 'Аватарка №' + it.id;
+    $('msvg').hidden = true; $('medit').hidden = true; $('mpng').textContent = 'Скачать';
+    $('mpng').onclick = async function () {
+      try { const b = await (await fetch(src)).blob(); const u = URL.createObjectURL(b); NF.download(u, 'avatar-user-' + it.id); setTimeout(function () { URL.revokeObjectURL(u); }, 2000); }
+      catch (e) { window.open(src, '_blank'); }
+    };
+    $('modal').classList.add('open');
+  }
+  async function loadUsers() {
+    if (!NFApi.enabled) return;
+    $('usersec').hidden = false;
+    try {
+      const d = await (await fetch(NFApi.base + '/api/bank')).json();
+      const g = $('ugrid');
+      g.innerHTML = d.items.length ? '' : '<p class="muted">Пока пусто. Станьте первым!</p>';
+      d.items.forEach(function (it) {
+        const el = document.createElement('div');
+        el.className = 'it';
+        el.innerHTML = '<img alt="' + esc(it.title) + '" loading="lazy" src="' + NFApi.base + '/api/bank/img/' + it.id + '" style="width:100%;border-radius:12px;display:block"><small>' + esc(it.title || '№' + it.id) + '</small>';
+        el.onclick = function () { openUser(it); };
+        g.appendChild(el);
+      });
+    } catch (e) { $('ugrid').innerHTML = '<p class="muted">Не удалось загрузить</p>'; }
+  }
+  const form = $('upform');
+  if (form) form.onsubmit = async function (e) {
+    e.preventDefault();
+    const msg = $('upmsg'), f = $('upfile').files[0];
+    if (!f) return;
+    if (f.size > 1024 * 1024) { msg.textContent = 'Файл больше 1 МБ'; return; }
+    const fd = new FormData();
+    fd.append('file', f); fd.append('title', $('uptitle').value); fd.append('agree', $('upagree').checked ? '1' : '0');
+    msg.textContent = 'Отправляем…';
+    try {
+      const r = await NFApi.call('/api/bank', { method: 'POST', body: fd });
+      const d = await r.json().catch(function () { return {}; });
+      const E = { upload_limit: 'Лимит загрузок на сегодня исчерпан', bad_type: 'Нужен JPG, PNG или WebP', too_big: 'Файл больше 1 МБ', no_consent: 'Нужно согласие с правилами' };
+      msg.textContent = r.ok ? 'Готово! Аватарка появится после проверки.' : (E[d.error] || 'Не получилось, попробуйте позже');
+      if (r.ok) form.reset();
+    } catch (err) { msg.textContent = 'Нет связи с сервером'; }
+  };
+  loadUsers();
 
   chips($('fstyle'), Avatar.STYLES, 'style');
   chips($('fpal'), Avatar.PALETTES, 'palette');

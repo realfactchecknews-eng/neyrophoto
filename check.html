@@ -23,6 +23,8 @@
       <input type="file" id="file" accept="image/*" hidden>
     </div>
 
+    <label class="f" id="srvwrap" hidden style="margin-top:14px"><input type="checkbox" id="srv"> Дополнительно проверить нейросетью. Файл (до 5 МБ) будет отправлен на наш сервер для анализа и <b>не сохраняется</b>. Лимит: 10 проверок в день.</label>
+
     <div id="result" hidden style="margin-top:24px">
       <div class="split">
         <div class="stage" style="aspect-ratio:auto;min-height:220px"><img id="pimg" alt="Проверяемое изображение" style="object-fit:contain;max-height:420px"></div>
@@ -44,7 +46,9 @@
 <footer id="ftr"></footer>
 <script src="js/config.js"></script>
 <script src="js/common.js"></script>
+<script src="js/api.js"></script>
 <script src="js/detect.js"></script>
+<script>if (window.NFApi && NFApi.enabled) document.getElementById("srvwrap").hidden = false;</script>
 <script src="js/check.js"></script>
 </body>
 </html>

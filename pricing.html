@@ -16,7 +16,7 @@
     <h1 style="font-size:clamp(26px,4vw,38px)">Тарифы</h1>
     <p class="muted">Конструктор аватарок и банк бесплатны всегда. Платите только за нейро-генерацию, если нужно больше трёх в день.</p>
     <div class="plans" id="plans"></div>
-    <p class="note">Оплата: Telegram Stars и Lava Top. Способы оплаты подключаются, пока кнопки показывают «Скоро».</p>
+    <p class="note">Покупки привязаны к этому браузеру: не очищайте данные сайта. Оплата через Telegram Stars: кнопка открывает бота, после оплаты генерации сразу появятся на этом устройстве. Вернитесь на сайт. Пока кнопки показывают «Скоро», оплата ещё подключается.</p>
   </section>
   <div data-ad="bottom"></div>
 </main>
@@ -24,21 +24,26 @@
 <footer id="ftr"></footer>
 <script src="js/config.js"></script>
 <script src="js/common.js"></script>
+<script src="js/api.js"></script>
 <script>
 (function () {
   var C = window.NF_CONFIG, el = document.getElementById('plans');
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-  el.innerHTML = C.pay.plans.map(function (p) {
-    var action;
-    if (p.id === 'free') action = '<a class="btn ghost" href="create.html">' + esc(p.cta) + '</a>';
-    else if (C.pay.lavaTopUrl || C.pay.telegramBot) {
-      action = '<div class="row">' +
-        (C.pay.telegramBot ? '<a class="btn" target="_blank" rel="noopener" href="https://t.me/' + esc(C.pay.telegramBot.replace('@', '')) + '?start=' + esc(p.id) + '">' + esc(p.cta) + ' · Stars</a>' : '') +
-        (C.pay.lavaTopUrl ? '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(C.pay.lavaTopUrl) + '">Lava Top</a>' : '') + '</div>';
-    } else action = '<button class="btn" disabled>Скоро</button>';
-    return '<div class="plan' + (p.featured ? ' featured' : '') + '"><h3>' + esc(p.name) + '</h3><div class="price">' + esc(p.price) +
-      '</div><div class="muted">' + esc(p.note) + '</div><ul>' + p.features.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' + action + '</div>';
-  }).join('');
+
+  function render(uid) {
+    var starsReady = NFApi.enabled && C.pay.telegramBot && uid;
+    el.innerHTML = C.pay.plans.map(function (p) {
+      var action;
+      if (p.id === 'free') action = '<a class="btn ghost" href="create.html">' + esc(p.cta) + '</a>';
+      else if (starsReady) action = '<a class="btn" target="_blank" rel="noopener" href="https://t.me/' + esc(C.pay.telegramBot.replace('@', '')) + '?start=' + esc(p.id) + '_' + esc(uid) + '">' + esc(p.cta) + ' · Telegram Stars</a>';
+      else action = '<button class="btn" disabled>Скоро</button>';
+      return '<div class="plan' + (p.featured ? ' featured' : '') + '"><h3>' + esc(p.name) + '</h3><div class="price">' + esc(p.price) +
+        '</div><div class="muted">' + esc(p.note) + '</div><ul>' + p.features.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' + action + '</div>';
+    }).join('');
+  }
+
+  render(null);
+  if (NFApi.enabled) NFApi.uid().then(render).catch(function () {});
 })();
 </script>
 </body>

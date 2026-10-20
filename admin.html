@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Модерация — Нейрофото</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="">
+<main class="wrap" style="padding-top:30px">
+  <h1 style="font-size:30px">Модерация банка</h1>
+  <p class="muted">Ключ хранится только в памяти страницы и уходит только на ваш API.</p>
+  <div class="row"><input type="text" id="key" placeholder="ADMIN_KEY" style="max-width:320px" autocomplete="off"><button class="btn" id="go">Загрузить очередь</button></div>
+  <p class="note" id="msg"></p>
+  <div class="agrid" id="q" style="margin-top:18px"></div>
+</main>
+<script src="js/config.js"></script>
+<script>
+(function () {
+  var base = (window.NF_CONFIG.apiBase || '').replace(/\/+$/, ''), $ = function (i) { return document.getElementById(i); };
+  var esc = function (t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  if (!base) $('msg').textContent = 'В js/config.js не задан apiBase.';
+  function hdr() { return { 'X-Admin-Key': $('key').value.trim() }; }
+  async function load() {
+    $('msg').textContent = 'Загрузка…';
+    var r = await fetch(base + '/api/admin/bank/pending', { headers: hdr() });
+    if (!r.ok) { $('msg').textContent = r.status === 403 ? 'Неверный ключ' : 'Ошибка ' + r.status; return; }
+    var d = await r.json(), q = $('q');
+    q.innerHTML = '';
+    $('msg').textContent = d.items.length ? 'В очереди: ' + d.items.length : 'Очередь пуста';
+    d.items.forEach(async function (it) {
+      var el = document.createElement('div');
+      el.className = 'it';
+      el.innerHTML = '<img style="width:100%;border-radius:12px;display:block" alt=""><small>#' + it.id + ' ' + esc(it.title) + '</small><div class="row" style="margin-top:8px;justify-content:center"><button class="btn sm">Одобрить</button><button class="btn ghost sm">Отклонить</button></div>';
+      q.appendChild(el);
+      var p = await fetch(base + '/api/admin/bank/preview/' + it.id, { headers: hdr() });
+      if (p.ok) el.querySelector('img').src = URL.createObjectURL(await p.blob());
+      var b = el.querySelectorAll('button');
+      function act(a) { return async function () { await fetch(base + '/api/admin/bank/' + it.id + '/' + a, { method: 'POST', headers: hdr() }); el.remove(); }; }
+      b[0].onclick = act('approve'); b[1].onclick = act('reject');
+    });
+  }
+  $('go').onclick = load;
+})();
+</script>
+</body>
+</html>

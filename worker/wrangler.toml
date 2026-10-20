@@ -1,0 +1,31 @@
+name = "neyrofoto-api"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# После `wrangler d1 create neyrofoto` вставьте database_id сюда
+[[d1_databases]]
+binding = "DB"
+database_name = "neyrofoto"
+database_id = "REPLACE_ME"
+
+# После `wrangler r2 bucket create neyrofoto-bank`
+[[r2_buckets]]
+binding = "BANK"
+bucket_name = "neyrofoto-bank"
+
+[vars]
+ALLOWED_ORIGINS = "https://neyrofoto.ru,https://www.neyrofoto.ru,https://realfactchecknews-eng.github.io"
+SITE_URL = "https://neyrofoto.ru"
+FREE_PER_DAY = "3"
+IP_FREE_PER_DAY = "15"
+PRO_MONTHLY = "300"
+PACK_CREDITS = "50"
+DETECT_PER_DAY = "10"
+UPLOADS_PER_DAY = "5"
+STARS_PACK = "150"
+STARS_PRO = "250"
+TELEGRAM_BOT = ""   # username бота без @
+
+# Секреты задаются командой `wrangler secret put <NAME>`, а не здесь:
+#   TOKEN_SECRET, TELEGRAM_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET, ADMIN_KEY,
+#   HF_TOKEN (детектор), LAVA_WEBHOOK_KEY, IMAGE_API_KEY (если свой генератор)

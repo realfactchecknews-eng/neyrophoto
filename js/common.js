@@ -25,7 +25,7 @@
       ftr.className = 'site';
       ftr.innerHTML =
         '<div class="wrap"><div>© ' + new Date().getFullYear() + ' ' + CFG.siteName +
-        ' · Аватарки создаются в вашем браузере, загруженные для проверки фото никуда не отправляются.</div></div>';
+        ' · <a href="privacy.html">Конфиденциальность</a> · <a href="terms.html">Условия</a></div></div>';
     }
   }
 

@@ -74,11 +74,15 @@
     modes.appendChild(b);
   });
 
-  function quotaUi() {
-    const left = NF.Quota.left();
+  async function quotaUi() {
+    let left = NF.Quota.left();
+    if (NFApi.enabled) {
+      try { const q = await NFApi.quota(); if (q) left = q.total; } catch (e) {}
+    }
     $('quota').innerHTML = 'Осталось генераций: <b>' + left + '</b> · <a href="pricing.html">Больше</a>';
   }
   quotaUi();
+  window.addEventListener('focus', quotaUi);
 
   function providerUrl(prompt, p, seed) {
     if (CFG.imageProvider.type === 'custom' && CFG.imageProvider.url) {
@@ -91,33 +95,47 @@
   const stage = $('nstage');
   const gen = $('gen');
   let lastUrl = '';
-  gen.onclick = function () {
+  function showImg(img, url, blobUrl) {
+    lastUrl = blobUrl || url;
+    stage.innerHTML = '';
+    stage.appendChild(img);
+    $('ndl').hidden = false;
+    $('nopen').hidden = false;
+    $('nopen').href = lastUrl;
+    gen.disabled = false;
+  }
+  function fail(msg) {
+    stage.innerHTML = '<div class="ph">' + msg + '</div>';
+    gen.disabled = false;
+  }
+
+  gen.onclick = async function () {
     const raw = $('prompt').value.trim();
     if (raw.length < 3) { $('nerr').textContent = 'Опишите, что нарисовать (хотя бы пару слов).'; return; }
     $('nerr').textContent = '';
-    if (NF.Quota.left() <= 0) { $('paywall').classList.add('open'); return; }
     const p = PRESETS[ni.mode];
-    const seed = Math.floor(Math.random() * 1e9);
-    const url = providerUrl(p.wrap(raw), p, seed);
     gen.disabled = true;
     stage.innerHTML = '<div class="ph"><div class="spin"></div>Генерируем…<br><small>обычно 5–20 секунд</small></div>';
     const img = new Image();
-    img.onload = function () {
-      NF.Quota.consume();
-      quotaUi();
-      lastUrl = url;
-      stage.innerHTML = '';
-      stage.appendChild(img);
-      $('ndl').hidden = false;
-      $('nopen').hidden = false;
-      $('nopen').href = url;
-      gen.disabled = false;
-    };
-    img.onerror = function () {
-      stage.innerHTML = '<div class="ph">Не получилось. Сервис генерации сейчас занят или недоступен. Попробуйте ещё раз: лимит не списан.</div>';
-      gen.disabled = false;
-    };
     img.alt = raw;
+
+    if (NFApi.enabled) {
+      try {
+        const r = await NFApi.call('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: raw, mode: ni.mode }) });
+        if (r.status === 402) { stage.innerHTML = '<div class="ph">Бесплатные генерации закончились</div>'; gen.disabled = false; $('paywall').classList.add('open'); quotaUi(); return; }
+        if (!r.ok) { fail('Не получилось. Сервис генерации сейчас недоступен. Лимит не списан, попробуйте ещё раз.'); return; }
+        const blobUrl = URL.createObjectURL(await r.blob());
+        img.onload = function () { showImg(img, blobUrl, blobUrl); quotaUi(); };
+        img.src = blobUrl;
+      } catch (e) { fail('Нет связи с сервером. Попробуйте ещё раз.'); }
+      return;
+    }
+
+    // Автономный режим: лимит в браузере, запрос прямо к сервису генерации
+    if (NF.Quota.left() <= 0) { stage.innerHTML = ''; gen.disabled = false; $('paywall').classList.add('open'); return; }
+    const url = providerUrl(p.wrap(raw), p, Math.floor(Math.random() * 1e9));
+    img.onload = function () { NF.Quota.consume(); quotaUi(); showImg(img, url); };
+    img.onerror = function () { fail('Не получилось. Сервис генерации сейчас занят или недоступен. Попробуйте ещё раз: лимит не списан.'); };
     img.src = url;
   };
   $('ndl').onclick = async function () {
